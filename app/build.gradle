@@ -1,0 +1,57 @@
+apply plugin: 'com.android.application'
+
+android {
+    compileSdkVersion 28
+    defaultConfig {
+        applicationId "com.wipro.screeningtask"
+        minSdkVersion 21
+        targetSdkVersion 28
+        versionCode 1
+        versionName "1.0"
+        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+    }
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+
+    dataBinding {
+        enabled = true
+    }
+}
+
+dependencies {
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+
+    // support library and design
+    implementation "com.android.support:appcompat-v7:$support_lib_version"
+    implementation "com.android.support:design:$support_lib_version"
+
+    // constraint layout
+    implementation "com.android.support.constraint:constraint-layout:$constraint_layout_version"
+
+    // live data using view model
+    implementation "android.arch.lifecycle:extensions:$lifecycle_version"
+
+    // server api call as well as parse json response
+    implementation "com.squareup.retrofit2:retrofit:$retrofit_version"
+    implementation "com.squareup.retrofit2:converter-gson:$retrofit_version"
+    implementation "com.squareup.okhttp3:okhttp:$okhttp_lib_version"
+
+    // image display and cache
+    implementation "com.squareup.picasso:picasso:$picasso_lib_version"
+
+    // room db for data storage
+    implementation "android.arch.persistence.room:runtime:$room_database_version"
+    annotationProcessor "android.arch.persistence.room:compiler:$room_database_version"
+
+    // provides support for multiple size phone
+    implementation "com.intuit.sdp:sdp-android:$sdp_lib_version"
+
+
+    testImplementation 'junit:junit:4.12'
+    androidTestImplementation 'com.android.support.test:runner:1.0.2'
+    androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
+}
