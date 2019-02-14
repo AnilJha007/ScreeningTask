@@ -7,6 +7,7 @@ import android.content.SharedPreferences;
 import android.databinding.DataBindingUtil;
 import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.DividerItemDecoration;
@@ -47,6 +48,19 @@ public class ExerciseActivity extends AppCompatActivity {
         // observe data and set it into recycler view
         observeData();
 
+        // setting pull to update data
+        pullToRefreshSetup();
+
+    }
+
+    private void pullToRefreshSetup() {
+
+        exerciseBinding.swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                observeData();
+            }
+        });
     }
 
     private void observeData() {
@@ -55,6 +69,9 @@ public class ExerciseActivity extends AppCompatActivity {
             @Override
             public void onChanged(@Nullable List<Exercise> exercises) {
                 exerciseAdapter.setData(exercises);
+
+                if (exerciseBinding.swipeRefreshLayout.isRefreshing())
+                    exerciseBinding.swipeRefreshLayout.setRefreshing(false);
 
                 if (getSupportActionBar() != null)
                     getSupportActionBar().setTitle(sharedPreferences.getString(ConstantUtil.TOOLBAR_TITLE, ""));

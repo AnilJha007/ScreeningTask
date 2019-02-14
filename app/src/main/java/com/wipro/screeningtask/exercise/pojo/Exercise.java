@@ -8,6 +8,7 @@ import android.widget.ImageView;
 import com.google.gson.annotations.SerializedName;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Target;
+import com.wipro.screeningtask.R;
 
 public class Exercise {
 
@@ -27,7 +28,7 @@ public class Exercise {
             view.setVisibility(View.GONE);
         } else {
             view.setVisibility(View.VISIBLE);
-            Picasso.get().load(url).noPlaceholder().into(view);
+            Picasso.get().load(url).placeholder(R.drawable.ic_launcher_background).into(view);
         }
     }
 
