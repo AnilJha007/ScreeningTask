@@ -1,4 +1,5 @@
 <resources>
     <string name="app_name">ScreeningTask</string>
     <string name="please_wait">Please wait…</string>
+    <string name="unable_to_check">Unable to check availability of Internet</string>
 </resources>

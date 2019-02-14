@@ -1,11 +1,13 @@
 package com.wipro.screeningtask.exercise.pojo;
 
 import android.databinding.BindingAdapter;
+import android.graphics.Bitmap;
 import android.view.View;
 import android.widget.ImageView;
 
 import com.google.gson.annotations.SerializedName;
 import com.squareup.picasso.Picasso;
+import com.squareup.picasso.Target;
 
 public class Exercise {
 
@@ -28,6 +30,7 @@ public class Exercise {
             Picasso.get().load(url).noPlaceholder().into(view);
         }
     }
+
 
     public String getTitle() {
         return title;
