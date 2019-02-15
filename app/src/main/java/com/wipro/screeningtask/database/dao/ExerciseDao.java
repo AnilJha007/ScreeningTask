@@ -15,11 +15,11 @@ public interface ExerciseDao {
 
     // insert data into database and handle conflict
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    void insertExerciseList(List<Exercise> exerciseList);
+    void insertExerciseList(List<ExerciseEntity> exerciseList);
 
     // get all the data present in exercise table
     @Query("select * from exercise_table order by id asc")
-    MutableLiveData<List<Exercise>> getExercise();
+    MutableLiveData<List<ExerciseEntity>> getExercise();
 
     // clear the table
     @Query("delete from exercise_table")
