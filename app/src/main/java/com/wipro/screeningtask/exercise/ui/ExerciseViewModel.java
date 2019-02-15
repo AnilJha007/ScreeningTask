@@ -3,42 +3,41 @@ package com.wipro.screeningtask.exercise.ui;
 import android.app.Application;
 import android.arch.lifecycle.AndroidViewModel;
 import android.arch.lifecycle.LiveData;
-import android.arch.lifecycle.MutableLiveData;
 
-import com.wipro.screeningtask.exercise.pojo.Exercise;
+import com.wipro.screeningtask.database.entity.ExerciseEntity;
 
 import java.util.List;
 
 public class ExerciseViewModel extends AndroidViewModel {
 
     private ExerciseRepository exerciseRepository;
-    private MutableLiveData<List<Exercise>> exerciseMutableLiveData;
+    private LiveData<List<ExerciseEntity>> exerciseLiveData;
 
     public ExerciseViewModel(Application application, ExerciseRepository exerciseRepository) {
         super(application);
         this.exerciseRepository = exerciseRepository;
     }
 
-    public LiveData<List<Exercise>> getExerciseList() {
-
-        if (exerciseMutableLiveData == null) {
-            exerciseMutableLiveData = exerciseRepository.getExerciseList();
+    // get exercise list either from database or server
+    public LiveData<List<ExerciseEntity>> getExerciseList() {
+        if (exerciseLiveData == null) {
+            exerciseLiveData = exerciseRepository.getExerciseList();
         }
-        return exerciseMutableLiveData;
+        return exerciseLiveData;
     }
 
+    // get loading state
     public LiveData<Boolean> getLoadingState() {
-
         return exerciseRepository.getLoadingState();
     }
 
+    // get error message
     public LiveData<String> getErrorMessage() {
-
         return exerciseRepository.getErrorMessage();
     }
 
-    public LiveData<List<Exercise>> getUpdatedExerciseList() {
-
+    // get updated exercise list from server using pull to refresh feature
+    public LiveData<List<ExerciseEntity>> getUpdatedExerciseList() {
         return exerciseRepository.getUpdatedExerciseList();
     }
 }

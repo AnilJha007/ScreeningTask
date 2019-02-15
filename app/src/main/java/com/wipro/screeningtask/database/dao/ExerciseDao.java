@@ -1,12 +1,12 @@
 package com.wipro.screeningtask.database.dao;
 
-import android.arch.lifecycle.MutableLiveData;
+import android.arch.lifecycle.LiveData;
 import android.arch.persistence.room.Dao;
 import android.arch.persistence.room.Insert;
 import android.arch.persistence.room.Query;
 import android.arch.persistence.room.OnConflictStrategy;
 
-import com.wipro.screeningtask.exercise.pojo.Exercise;
+import com.wipro.screeningtask.database.entity.ExerciseEntity;
 
 import java.util.List;
 
@@ -15,11 +15,11 @@ public interface ExerciseDao {
 
     // insert data into database and handle conflict
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    void insertExerciseList(List<Exercise> exerciseList);
+    void insertExerciseList(List<ExerciseEntity> exerciseList);
 
     // get all the data present in exercise table
     @Query("select * from exercise_table order by id asc")
-    MutableLiveData<List<Exercise>> getExercise();
+    LiveData<List<ExerciseEntity>> getExercise();
 
     // clear the table
     @Query("delete from exercise_table")

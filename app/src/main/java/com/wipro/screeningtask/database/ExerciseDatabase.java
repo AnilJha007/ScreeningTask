@@ -8,11 +8,12 @@ import android.content.Context;
 import com.wipro.screeningtask.database.dao.ExerciseDao;
 import com.wipro.screeningtask.database.entity.ExerciseEntity;
 
-@Database(entities = {ExerciseEntity.class}, version = 1)
+@Database(entities = {ExerciseEntity.class}, version = 1, exportSchema = false)
 public abstract class ExerciseDatabase extends RoomDatabase {
 
     private static ExerciseDatabase instance;
 
+    // get instance of database
     public static synchronized ExerciseDatabase getInstance(Context context) {
 
         if (instance == null) {
@@ -25,6 +26,7 @@ public abstract class ExerciseDatabase extends RoomDatabase {
         return instance;
     }
 
+    // using dao to to avoid more boilerplate code
     public abstract ExerciseDao exerciseDao();
 
 

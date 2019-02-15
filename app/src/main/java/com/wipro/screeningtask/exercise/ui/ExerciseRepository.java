@@ -1,16 +1,15 @@
 package com.wipro.screeningtask.exercise.ui;
 
 import android.app.Application;
+import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.MutableLiveData;
-import android.content.Context;
 import android.content.SharedPreferences;
-import android.util.Log;
 
 import com.wipro.screeningtask.R;
 import com.wipro.screeningtask.database.ExerciseDatabase;
+import com.wipro.screeningtask.database.entity.ExerciseEntity;
 import com.wipro.screeningtask.network.ApiClient;
 import com.wipro.screeningtask.network.ApiInterface;
-import com.wipro.screeningtask.exercise.pojo.Exercise;
 import com.wipro.screeningtask.exercise.pojo.ExerciseList;
 import com.wipro.screeningtask.utils.ConstantUtil;
 import com.wipro.screeningtask.utils.InternetUtil;
@@ -49,19 +48,19 @@ public class ExerciseRepository {
         return mutableErrorData;
     }
 
-    public MutableLiveData<List<Exercise>> getExerciseList() {
+    public LiveData<List<ExerciseEntity>> getExerciseList() {
 
-        mutableIsLoading.setValue(true);
+        long rowCount = exerciseDatabase.exerciseDao().getExerciseCount();
 
-        if (!internetUtil.isNetworkAvailable()) {
-            mutableIsLoading.setValue(false);
-            mutableErrorData.setValue(application.getResources().getString(R.string.internet_not_available));
-        } else {
+        // call api to pull data from server because database has no data
+        if (rowCount == 0) {
 
-            long rowCount = exerciseDatabase.exerciseDao().getExerciseCount();
+            mutableIsLoading.setValue(true);
 
-            // call api to pull data from server
-            if (rowCount == 0) {
+            if (!internetUtil.isNetworkAvailable()) {
+                mutableIsLoading.setValue(false);
+                mutableErrorData.setValue(application.getResources().getString(R.string.internet_not_available));
+            } else {
 
                 ApiInterface apiService =
                         ApiClient.getClient().create(ApiInterface.class);
@@ -82,7 +81,7 @@ public class ExerciseRepository {
 
                         } else {
 
-                            // error here if response body is null
+                            // set error here if response body is null
                             mutableErrorData.setValue(application.getResources().getString(R.string.error_try_later));
                         }
                     }
@@ -95,17 +94,17 @@ public class ExerciseRepository {
                         mutableErrorData.setValue(application.getResources().getString(R.string.error_try_later));
                     }
                 });
-            } else {
-                mutableIsLoading.setValue(false);
             }
+
         }
 
         return exerciseDatabase.exerciseDao().getExercise();
+
     }
 
-    public MutableLiveData<List<Exercise>> getUpdatedExerciseList() {
+    public MutableLiveData<List<ExerciseEntity>> getUpdatedExerciseList() {
 
-        final MutableLiveData<List<Exercise>> mutableExerciseList = new MutableLiveData<>();
+        final MutableLiveData<List<ExerciseEntity>> mutableExerciseList = new MutableLiveData<>();
 
         if (!internetUtil.isNetworkAvailable()) {
             mutableErrorData.setValue(application.getResources().getString(R.string.internet_not_available));
@@ -122,7 +121,13 @@ public class ExerciseRepository {
                     if (response.body() != null) {
                         ExerciseList exerciseList = response.body();
                         editor.putString(ConstantUtil.TOOLBAR_TITLE, response.body().getTitle()).apply();
+
+                        // deleting the stored data and inserting updated data into database
+                        exerciseDatabase.exerciseDao().deleteExerciseData();
+                        exerciseDatabase.exerciseDao().insertExerciseList(exerciseList.getRows());
+
                         mutableExerciseList.setValue(exerciseList.getRows());
+
                     } else {
 
                         // error here if response body is null

@@ -7,15 +7,15 @@ import android.view.LayoutInflater;
 import android.view.ViewGroup;
 
 import com.wipro.screeningtask.R;
+import com.wipro.screeningtask.database.entity.ExerciseEntity;
 import com.wipro.screeningtask.databinding.ItemExerciseListBinding;
-import com.wipro.screeningtask.exercise.pojo.Exercise;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class ExerciseAdapter extends RecyclerView.Adapter<ExerciseAdapter.ViewHolder> {
 
-    private List<Exercise> exerciseList = new ArrayList<>();
+    private List<ExerciseEntity> exerciseList = new ArrayList<>();
 
     @NonNull
     @Override
@@ -46,14 +46,14 @@ public class ExerciseAdapter extends RecyclerView.Adapter<ExerciseAdapter.ViewHo
         }
 
         private void bindDataWithView(int position) {
-            Exercise exercise = exerciseList.get(position);
+            ExerciseEntity exercise = exerciseList.get(position);
             itemExerciseListBinding.setExercise(exercise);
         }
     }
 
 
     // setting data to adapter
-    public void setData(List<Exercise> newInfoList) {
+    public void setData(List<ExerciseEntity> newInfoList) {
 
         if (exerciseList != null)
             exerciseList.clear();
