@@ -20,9 +20,25 @@ public class ExerciseViewModel extends AndroidViewModel {
     }
 
     public LiveData<List<Exercise>> getExerciseList() {
+
         if (exerciseMutableLiveData == null) {
             exerciseMutableLiveData = exerciseRepository.getExerciseList();
         }
         return exerciseMutableLiveData;
+    }
+
+    public LiveData<Boolean> getLoadingState() {
+
+        return exerciseRepository.getLoadingState();
+    }
+
+    public LiveData<String> getErrorMessage() {
+
+        return exerciseRepository.getErrorMessage();
+    }
+
+    public LiveData<List<Exercise>> getUpdatedExerciseList() {
+
+        return exerciseRepository.getUpdatedExerciseList();
     }
 }

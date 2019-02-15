@@ -50,6 +50,8 @@ dependencies {
     // provides support for multiple size phone
     implementation "com.intuit.sdp:sdp-android:$sdp_lib_version"
 
+    // loader while loading data
+    implementation "com.github.d-max:spots-dialog:$loader_version"
 
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'com.android.support.test:runner:1.0.2'
