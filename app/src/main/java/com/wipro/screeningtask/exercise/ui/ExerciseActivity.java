@@ -9,7 +9,6 @@ import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
-import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.DividerItemDecoration;
@@ -17,6 +16,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.View;
 
 import com.wipro.screeningtask.R;
+import com.wipro.screeningtask.database.ExerciseDatabase;
 import com.wipro.screeningtask.databinding.ActivityExerciseBinding;
 import com.wipro.screeningtask.exercise.adapter.ExerciseAdapter;
 import com.wipro.screeningtask.exercise.pojo.Exercise;
@@ -26,8 +26,6 @@ import com.wipro.screeningtask.utils.ViewModelFactory;
 
 import java.util.List;
 
-import dmax.dialog.SpotsDialog;
-
 public class ExerciseActivity extends AppCompatActivity {
 
     private ActivityExerciseBinding exerciseBinding;
@@ -36,15 +34,18 @@ public class ExerciseActivity extends AppCompatActivity {
     private SharedPreferences sharedPreferences;
     private SharedPreferences.Editor editor;
     private InternetUtil internetUtil;
+    private ExerciseDatabase exerciseDatabase;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         exerciseBinding = DataBindingUtil.setContentView(this, R.layout.activity_exercise);
+
         sharedPreferences = getSharedPreferences(ConstantUtil.SHARED_PREF, Context.MODE_PRIVATE);
         editor = sharedPreferences.edit();
         internetUtil = new InternetUtil(this);
+        exerciseDatabase = ExerciseDatabase.getInstance(this);
 
         // setting toolbar
         toolbarSetup();
@@ -53,7 +54,7 @@ public class ExerciseActivity extends AppCompatActivity {
         recyclerViewSetup();
 
         // initialize view model using view model factory
-        exerciseViewModel = ViewModelProviders.of(this, new ViewModelFactory(getApplication(), new ExerciseRepository(getApplication(), editor, internetUtil))).get(ExerciseViewModel.class);
+        exerciseViewModel = ViewModelProviders.of(this, new ViewModelFactory(getApplication(), new ExerciseRepository(getApplication(), editor, internetUtil, exerciseDatabase))).get(ExerciseViewModel.class);
 
         // observe data and set it into recycler view
         observeViewModelData();
