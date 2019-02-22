@@ -4,5 +4,6 @@
     <string name="unable_to_check">Unable to check availability of Internet</string>
     <string name="internet_not_available">Internet not available</string>
     <string name="error_try_later">Error occurred! Please try later.</string>
+    <string name="not_available">Not available</string>
 
 </resources>

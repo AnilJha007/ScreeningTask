@@ -30,10 +30,9 @@ public class ExerciseEntity {
     public static void loadImage(ImageView view, String url) {
 
         if (url == null || url.isEmpty()) {
-            view.setVisibility(View.GONE);
+            view.setImageResource(R.drawable.placeholder_iamge);
         } else {
-            view.setVisibility(View.VISIBLE);
-            Picasso.get().load(url).placeholder(R.drawable.ic_launcher_background).into(view);
+            Picasso.get().load(url).placeholder(R.drawable.placeholder_iamge).into(view);
         }
     }
 

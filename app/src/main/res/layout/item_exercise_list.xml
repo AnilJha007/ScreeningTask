@@ -20,7 +20,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:paddingBottom="@dimen/_10sdp"
-            android:text="@{exercise.title}"
+            android:text='@{exercise.title  ??  @string/not_available }'
             android:textColor="@color/colorMediumPurple"
             android:textSize="@dimen/_15sdp"
             tools:text="Murdochs need counselling after hacking scandal, says magzine" />
@@ -37,7 +37,7 @@
             android:id="@+id/textViewDescription"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:text="@{exercise.description}"
+            android:text="@{exercise.description ?? @string/not_available}"
             android:textColor="@android:color/black"
             android:textSize="@dimen/_10sdp"
             app:layout_constraintEnd_toStartOf="@id/imageViewHref"

@@ -28,12 +28,14 @@ public class ExerciseRepository {
     private MutableLiveData<Boolean> mutableIsLoading;
     private MutableLiveData<String> mutableErrorData;
     private ExerciseDatabase exerciseDatabase;
+    private ApiInterface apiInterface;
 
-    public ExerciseRepository(Application application, SharedPreferences.Editor editor, InternetUtil internetUtil, ExerciseDatabase exerciseDatabase) {
+    public ExerciseRepository(Application application, SharedPreferences.Editor editor, InternetUtil internetUtil, ExerciseDatabase exerciseDatabase, ApiInterface apiInterface) {
         this.editor = editor;
         this.internetUtil = internetUtil;
         this.application = application;
         this.exerciseDatabase = exerciseDatabase;
+        this.apiInterface = apiInterface;
 
         mutableIsLoading = new MutableLiveData<>();
         mutableErrorData = new MutableLiveData<>();
@@ -62,10 +64,7 @@ public class ExerciseRepository {
                 mutableErrorData.setValue(application.getResources().getString(R.string.internet_not_available));
             } else {
 
-                ApiInterface apiService =
-                        ApiClient.getClient().create(ApiInterface.class);
-
-                Call<ExerciseList> call = apiService.getExerciseList();
+                Call<ExerciseList> call = apiInterface.getExerciseList();
                 call.enqueue(new Callback<ExerciseList>() {
                     @Override
                     public void onResponse(Call<ExerciseList> call, Response<ExerciseList> response) {
@@ -110,10 +109,7 @@ public class ExerciseRepository {
             mutableErrorData.setValue(application.getResources().getString(R.string.internet_not_available));
         } else {
 
-            ApiInterface apiService =
-                    ApiClient.getClient().create(ApiInterface.class);
-
-            Call<ExerciseList> call = apiService.getExerciseList();
+            Call<ExerciseList> call = apiInterface.getExerciseList();
             call.enqueue(new Callback<ExerciseList>() {
                 @Override
                 public void onResponse(Call<ExerciseList> call, Response<ExerciseList> response) {
