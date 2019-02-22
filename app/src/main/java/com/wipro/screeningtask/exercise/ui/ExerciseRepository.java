@@ -8,7 +8,6 @@ import android.content.SharedPreferences;
 import com.wipro.screeningtask.R;
 import com.wipro.screeningtask.database.ExerciseDatabase;
 import com.wipro.screeningtask.database.entity.ExerciseEntity;
-import com.wipro.screeningtask.network.ApiClient;
 import com.wipro.screeningtask.network.ApiInterface;
 import com.wipro.screeningtask.exercise.pojo.ExerciseList;
 import com.wipro.screeningtask.utils.ConstantUtil;

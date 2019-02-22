@@ -4,7 +4,6 @@ import android.arch.persistence.room.ColumnInfo;
 import android.arch.persistence.room.Entity;
 import android.arch.persistence.room.PrimaryKey;
 import android.databinding.BindingAdapter;
-import android.view.View;
 import android.widget.ImageView;
 
 import com.squareup.picasso.Picasso;
