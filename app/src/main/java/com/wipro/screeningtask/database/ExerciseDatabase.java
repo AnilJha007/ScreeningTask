@@ -26,8 +26,7 @@ public abstract class ExerciseDatabase extends RoomDatabase {
         return instance;
     }
 
-    // using dao to to avoid more boilerplate code
+    // using dao
     public abstract ExerciseDao exerciseDao();
-
 
 }

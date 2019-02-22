@@ -1,4 +1,4 @@
-package com.wipro.screeningtask.exercise.adapter;
+package com.wipro.screeningtask.exercise.ui;
 
 import android.databinding.DataBindingUtil;
 import android.support.annotation.NonNull;

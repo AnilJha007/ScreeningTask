@@ -3,14 +3,12 @@ package com.wipro.screeningtask.exercise.ui;
 import android.app.Application;
 import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.MutableLiveData;
-import android.content.SharedPreferences;
 
 import com.wipro.screeningtask.R;
 import com.wipro.screeningtask.database.ExerciseDatabase;
 import com.wipro.screeningtask.database.entity.ExerciseEntity;
 import com.wipro.screeningtask.network.ApiInterface;
 import com.wipro.screeningtask.exercise.pojo.ExerciseList;
-import com.wipro.screeningtask.utils.ConstantUtil;
 import com.wipro.screeningtask.utils.InternetUtil;
 
 import java.util.List;
@@ -21,35 +19,44 @@ import retrofit2.Response;
 
 public class ExerciseRepository {
 
-    private SharedPreferences.Editor editor;
     private Application application;
     private InternetUtil internetUtil;
     private MutableLiveData<Boolean> mutableIsLoading;
     private MutableLiveData<String> mutableErrorData;
+    private MutableLiveData<String> mutableTitleData;
+
     private ExerciseDatabase exerciseDatabase;
     private ApiInterface apiInterface;
 
-    public ExerciseRepository(Application application, SharedPreferences.Editor editor, InternetUtil internetUtil, ExerciseDatabase exerciseDatabase, ApiInterface apiInterface) {
-        this.editor = editor;
+    public ExerciseRepository(Application application, InternetUtil internetUtil, ExerciseDatabase exerciseDatabase, ApiInterface apiInterface) {
         this.internetUtil = internetUtil;
         this.application = application;
         this.exerciseDatabase = exerciseDatabase;
         this.apiInterface = apiInterface;
 
-        mutableIsLoading = new MutableLiveData<>();
-        mutableErrorData = new MutableLiveData<>();
-
     }
 
+    // get loading state
     public MutableLiveData<Boolean> getLoadingState() {
         return mutableIsLoading;
     }
 
+    // get error state
     public MutableLiveData<String> getErrorMessage() {
         return mutableErrorData;
     }
 
+    // get title data
+    public MutableLiveData<String> getTitle() {
+        return mutableTitleData;
+    }
+
+    // get exercise list
     public LiveData<List<ExerciseEntity>> getExerciseList(boolean isFromPullRefresh) {
+
+        mutableErrorData = new MutableLiveData<>();
+        mutableIsLoading = new MutableLiveData<>();
+        mutableTitleData= new MutableLiveData<>();
 
         // here we need updated data from server
         if (isFromPullRefresh) {
@@ -90,10 +97,11 @@ public class ExerciseRepository {
                     if (response.body() != null) {
 
                         ExerciseList exerciseList = response.body();
-                        editor.putString(ConstantUtil.TOOLBAR_TITLE, response.body().getTitle()).apply();
 
                         if (exerciseDatabase.exerciseDao().getExerciseCount() > 0)
                             exerciseDatabase.exerciseDao().deleteExerciseData();
+
+                        mutableTitleData.setValue(response.body().getTitle());
 
                         // insert exercise data into database
                         exerciseDatabase.exerciseDao().insertExerciseList(exerciseList.getRows());

@@ -14,10 +14,8 @@ import android.view.View;
 import com.wipro.screeningtask.R;
 import com.wipro.screeningtask.database.ExerciseDatabase;
 import com.wipro.screeningtask.databinding.ActivityExerciseBinding;
-import com.wipro.screeningtask.exercise.adapter.ExerciseAdapter;
 import com.wipro.screeningtask.network.ApiClient;
 import com.wipro.screeningtask.network.ApiInterface;
-import com.wipro.screeningtask.utils.ConstantUtil;
 import com.wipro.screeningtask.utils.InternetUtil;
 import com.wipro.screeningtask.utils.ViewModelFactory;
 
@@ -26,8 +24,6 @@ public class ExerciseActivity extends AppCompatActivity {
     private ActivityExerciseBinding exerciseBinding;
     private ExerciseAdapter exerciseAdapter;
     private ExerciseViewModel exerciseViewModel;
-    private SharedPreferences sharedPreferences;
-    private SharedPreferences.Editor editor;
     private InternetUtil internetUtil;
     private ExerciseDatabase exerciseDatabase;
     private ApiInterface apiInterface;
@@ -38,8 +34,6 @@ public class ExerciseActivity extends AppCompatActivity {
 
         exerciseBinding = DataBindingUtil.setContentView(this, R.layout.activity_exercise);
 
-        sharedPreferences = getSharedPreferences(ConstantUtil.SHARED_PREF, Context.MODE_PRIVATE);
-        editor = sharedPreferences.edit();
         internetUtil = new InternetUtil(this);
         exerciseDatabase = ExerciseDatabase.getInstance(this);
         apiInterface = ApiClient.getClient().create(ApiInterface.class);
@@ -51,7 +45,7 @@ public class ExerciseActivity extends AppCompatActivity {
         recyclerViewSetup();
 
         // initialize view model using view model factory
-        exerciseViewModel = ViewModelProviders.of(this, new ViewModelFactory(getApplication(), new ExerciseRepository(getApplication(), editor, internetUtil, exerciseDatabase, apiInterface))).get(ExerciseViewModel.class);
+        exerciseViewModel = ViewModelProviders.of(this, new ViewModelFactory(new ExerciseRepository(getApplication(), internetUtil, exerciseDatabase, apiInterface))).get(ExerciseViewModel.class);
 
         // observe data and set it into recycler view
         observeViewModelData(false);
@@ -75,10 +69,6 @@ public class ExerciseActivity extends AppCompatActivity {
 
             if (exerciseBinding.swipeRefreshLayout.isRefreshing())
                 exerciseBinding.swipeRefreshLayout.setRefreshing(false);
-
-            if (getSupportActionBar() != null)
-                getSupportActionBar().setTitle(sharedPreferences.getString(ConstantUtil.TOOLBAR_TITLE, ""));
-
         });
 
         // observing loading state here
@@ -100,6 +90,8 @@ public class ExerciseActivity extends AppCompatActivity {
 
             Snackbar.make(exerciseBinding.rootLayout, s, 3000).show();
         });
+
+        exerciseViewModel.getTitle().observe(this, title -> getSupportActionBar().setTitle(title));
 
     }
 

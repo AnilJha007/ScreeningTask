@@ -10,11 +10,9 @@ import com.wipro.screeningtask.exercise.ui.ExerciseViewModel;
 
 public class ViewModelFactory implements ViewModelProvider.Factory {
 
-    private Application application;
     private ExerciseRepository exerciseRepository;
 
-    public ViewModelFactory(Application application, ExerciseRepository exerciseRepository) {
-        this.application = application;
+    public ViewModelFactory(ExerciseRepository exerciseRepository) {
         this.exerciseRepository = exerciseRepository;
     }
 
@@ -23,8 +21,7 @@ public class ViewModelFactory implements ViewModelProvider.Factory {
     public <T extends ViewModel> T create(@NonNull Class<T> modelClass) {
 
         if (ExerciseViewModel.class.isAssignableFrom(modelClass)) {
-            return (T) new ExerciseViewModel(application, exerciseRepository);
-
+            return (T) new ExerciseViewModel(exerciseRepository);
         }
 
         return null;

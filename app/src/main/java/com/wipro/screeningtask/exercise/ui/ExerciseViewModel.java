@@ -1,20 +1,19 @@
 package com.wipro.screeningtask.exercise.ui;
 
-import android.app.Application;
-import android.arch.lifecycle.AndroidViewModel;
 import android.arch.lifecycle.LiveData;
+import android.arch.lifecycle.MutableLiveData;
+import android.arch.lifecycle.ViewModel;
 
 import com.wipro.screeningtask.database.entity.ExerciseEntity;
 
 import java.util.List;
 
-public class ExerciseViewModel extends AndroidViewModel {
+public class ExerciseViewModel extends ViewModel {
 
     private ExerciseRepository exerciseRepository;
     private LiveData<List<ExerciseEntity>> exerciseLiveData;
 
-    public ExerciseViewModel(Application application, ExerciseRepository exerciseRepository) {
-        super(application);
+    public ExerciseViewModel(ExerciseRepository exerciseRepository) {
         this.exerciseRepository = exerciseRepository;
     }
 
@@ -37,8 +36,12 @@ public class ExerciseViewModel extends AndroidViewModel {
     }
 
     // get error message
-    public LiveData<String> getErrorMessage() {
+    public MutableLiveData<String> getErrorMessage() {
         return exerciseRepository.getErrorMessage();
     }
 
+    // get title message
+    public LiveData<String> getTitle() {
+        return exerciseRepository.getTitle();
+    }
 }
