@@ -19,11 +19,16 @@ public class ExerciseViewModel extends AndroidViewModel {
     }
 
     // get exercise list either from database or server
-    public LiveData<List<ExerciseEntity>> getExerciseList() {
-        if (exerciseLiveData == null) {
-            exerciseLiveData = exerciseRepository.getExerciseList();
+    public LiveData<List<ExerciseEntity>> getExerciseList(boolean isFromPullRefresh) {
+
+        if (isFromPullRefresh) {
+            return exerciseLiveData = exerciseRepository.getExerciseList(true);
+        } else {
+            if (exerciseLiveData == null) {
+                exerciseLiveData = exerciseRepository.getExerciseList(false);
+            }
+            return exerciseLiveData;
         }
-        return exerciseLiveData;
     }
 
     // get loading state
@@ -36,8 +41,4 @@ public class ExerciseViewModel extends AndroidViewModel {
         return exerciseRepository.getErrorMessage();
     }
 
-    // get updated exercise list from server using pull to refresh feature
-    public LiveData<List<ExerciseEntity>> getUpdatedExerciseList() {
-        return exerciseRepository.getUpdatedExerciseList();
-    }
 }

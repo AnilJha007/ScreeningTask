@@ -60,9 +60,9 @@ public class ExerciseActivity extends AppCompatActivity {
         exerciseViewModel = ViewModelProviders.of(this, new ViewModelFactory(getApplication(), new ExerciseRepository(getApplication(), editor, internetUtil, exerciseDatabase, apiInterface))).get(ExerciseViewModel.class);
 
         // observe data and set it into recycler view
-        observeViewModelData();
+        observeViewModelData(false);
 
-        // setting pull to update data
+        // setting pull to refresh for updated data
         pullToRefreshSetup();
 
     }
@@ -72,35 +72,21 @@ public class ExerciseActivity extends AppCompatActivity {
         exerciseBinding.swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                observeUpdatedViewModelData();
+                observeViewModelData(true);
             }
         });
     }
 
-    private void observeUpdatedViewModelData() {
+    private void observeViewModelData(boolean isFromPullRefresh) {
 
-        // observing data from api call
-        exerciseViewModel.getUpdatedExerciseList().observe(this, new Observer<List<ExerciseEntity>>() {
+        // observing data from api call or room database
+        exerciseViewModel.getExerciseList(isFromPullRefresh).observe(this, new Observer<List<ExerciseEntity>>() {
             @Override
             public void onChanged(@Nullable List<ExerciseEntity> exercises) {
                 exerciseAdapter.setData(exercises);
 
                 if (exerciseBinding.swipeRefreshLayout.isRefreshing())
                     exerciseBinding.swipeRefreshLayout.setRefreshing(false);
-
-                if (getSupportActionBar() != null)
-                    getSupportActionBar().setTitle(sharedPreferences.getString(ConstantUtil.TOOLBAR_TITLE, ""));
-            }
-        });
-    }
-
-    private void observeViewModelData() {
-
-        // observing data from api call
-        exerciseViewModel.getExerciseList().observe(this, new Observer<List<ExerciseEntity>>() {
-            @Override
-            public void onChanged(@Nullable List<ExerciseEntity> exercises) {
-                exerciseAdapter.setData(exercises);
 
                 if (getSupportActionBar() != null)
                     getSupportActionBar().setTitle(sharedPreferences.getString(ConstantUtil.TOOLBAR_TITLE, ""));

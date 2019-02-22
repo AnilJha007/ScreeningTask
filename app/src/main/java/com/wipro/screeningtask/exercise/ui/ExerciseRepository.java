@@ -50,62 +50,34 @@ public class ExerciseRepository {
         return mutableErrorData;
     }
 
-    public LiveData<List<ExerciseEntity>> getExerciseList() {
+    public LiveData<List<ExerciseEntity>> getExerciseList(boolean isFromPullRefresh) {
 
-        long rowCount = exerciseDatabase.exerciseDao().getExerciseCount();
+        // here we need updated data from server
+        if (isFromPullRefresh) {
 
-        // call api to pull data from server because database has no data
-        if (rowCount == 0) {
+            callApiAndInsertIntoDB();
 
-            mutableIsLoading.setValue(true);
+        } else {
 
-            if (!internetUtil.isNetworkAvailable()) {
-                mutableIsLoading.setValue(false);
-                mutableErrorData.setValue(application.getResources().getString(R.string.internet_not_available));
-            } else {
+            // check if already data available into database or not if yes then return else call api
+            long rowCount = exerciseDatabase.exerciseDao().getExerciseCount();
 
-                Call<ExerciseList> call = apiInterface.getExerciseList();
-                call.enqueue(new Callback<ExerciseList>() {
-                    @Override
-                    public void onResponse(Call<ExerciseList> call, Response<ExerciseList> response) {
+            if (rowCount == 0) {
 
-                        mutableIsLoading.setValue(false);
+                mutableIsLoading.setValue(true);
+                callApiAndInsertIntoDB();
 
-                        if (response.body() != null) {
-                            ExerciseList exerciseList = response.body();
-                            editor.putString(ConstantUtil.TOOLBAR_TITLE, response.body().getTitle()).apply();
-
-                            // insert exercise data into database
-                            exerciseDatabase.exerciseDao().insertExerciseList(exerciseList.getRows());
-
-                        } else {
-
-                            // set error here if response body is null
-                            mutableErrorData.setValue(application.getResources().getString(R.string.error_try_later));
-                        }
-                    }
-
-                    @Override
-                    public void onFailure(Call<ExerciseList> call, Throwable t) {
-
-                        //  error here since request failed
-                        mutableIsLoading.setValue(false);
-                        mutableErrorData.setValue(application.getResources().getString(R.string.error_try_later));
-                    }
-                });
             }
-
         }
 
         return exerciseDatabase.exerciseDao().getExercise();
 
     }
 
-    public MutableLiveData<List<ExerciseEntity>> getUpdatedExerciseList() {
-
-        final MutableLiveData<List<ExerciseEntity>> mutableExerciseList = new MutableLiveData<>();
+    private void callApiAndInsertIntoDB() {
 
         if (!internetUtil.isNetworkAvailable()) {
+            mutableIsLoading.setValue(false);
             mutableErrorData.setValue(application.getResources().getString(R.string.internet_not_available));
         } else {
 
@@ -114,19 +86,22 @@ public class ExerciseRepository {
                 @Override
                 public void onResponse(Call<ExerciseList> call, Response<ExerciseList> response) {
 
+                    mutableIsLoading.setValue(false);
+
                     if (response.body() != null) {
+
                         ExerciseList exerciseList = response.body();
                         editor.putString(ConstantUtil.TOOLBAR_TITLE, response.body().getTitle()).apply();
 
-                        // deleting the stored data and inserting updated data into database
-                        exerciseDatabase.exerciseDao().deleteExerciseData();
-                        exerciseDatabase.exerciseDao().insertExerciseList(exerciseList.getRows());
+                        if (exerciseDatabase.exerciseDao().getExerciseCount() > 0)
+                            exerciseDatabase.exerciseDao().deleteExerciseData();
 
-                        mutableExerciseList.setValue(exerciseList.getRows());
+                        // insert exercise data into database
+                        exerciseDatabase.exerciseDao().insertExerciseList(exerciseList.getRows());
 
                     } else {
 
-                        // error here if response body is null
+                        // set error here if response body is null
                         mutableErrorData.setValue(application.getResources().getString(R.string.error_try_later));
                     }
                 }
@@ -135,12 +110,12 @@ public class ExerciseRepository {
                 public void onFailure(Call<ExerciseList> call, Throwable t) {
 
                     //  error here since request failed
+                    mutableIsLoading.setValue(false);
                     mutableErrorData.setValue(application.getResources().getString(R.string.error_try_later));
                 }
             });
-
         }
 
-        return mutableExerciseList;
     }
+
 }
