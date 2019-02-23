@@ -1,8 +1,6 @@
 package com.wipro.screeningtask.exercise.ui;
 
 import android.arch.lifecycle.ViewModelProviders;
-import android.content.Context;
-import android.content.SharedPreferences;
 import android.databinding.DataBindingUtil;
 import android.support.design.widget.Snackbar;
 import android.support.v4.content.ContextCompat;

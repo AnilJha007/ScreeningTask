@@ -56,7 +56,7 @@ public class ExerciseRepository {
 
         mutableErrorData = new MutableLiveData<>();
         mutableIsLoading = new MutableLiveData<>();
-        mutableTitleData= new MutableLiveData<>();
+        mutableTitleData = new MutableLiveData<>();
 
         // here we need updated data from server
         if (isFromPullRefresh) {
@@ -98,8 +98,7 @@ public class ExerciseRepository {
 
                         ExerciseList exerciseList = response.body();
 
-                        if (exerciseDatabase.exerciseDao().getExerciseCount() > 0)
-                            exerciseDatabase.exerciseDao().deleteExerciseData();
+                        exerciseDatabase.exerciseDao().deleteExerciseData();
 
                         mutableTitleData.setValue(response.body().getTitle());
 

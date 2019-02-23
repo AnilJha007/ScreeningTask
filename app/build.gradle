@@ -53,7 +53,15 @@ dependencies {
     // provides support for multiple size phone
     implementation "com.intuit.sdp:sdp-android:$sdp_lib_version"
 
+    // library for mock objects in testing
+    testImplementation "org.mockito:mockito-core:$mockito_version"
+    androidTestImplementation "org.mockito:mockito-android:$mockito_version"
+
+    // library for test helpers
+    testImplementation "android.arch.core:core-testing:$lifecycle_version"
+
     testImplementation 'junit:junit:4.12'
+    androidTestImplementation 'com.android.support.test:rules:1.0.2'
     androidTestImplementation 'com.android.support.test:runner:1.0.2'
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
 }
