@@ -15,6 +15,8 @@ import com.wipro.screeningtask.databinding.ActivityExerciseBinding;
 import com.wipro.screeningtask.network.ApiClient;
 import com.wipro.screeningtask.network.ApiInterface;
 import com.wipro.screeningtask.utils.InternetUtil;
+import com.wipro.screeningtask.utils.SchedulerProvider.BaseSchedulerProvider;
+import com.wipro.screeningtask.utils.SchedulerProvider.SchedulerProvider;
 import com.wipro.screeningtask.utils.ViewModelFactory;
 
 public class ExerciseActivity extends AppCompatActivity {
@@ -25,6 +27,7 @@ public class ExerciseActivity extends AppCompatActivity {
     private InternetUtil internetUtil;
     private ExerciseDatabase exerciseDatabase;
     private ApiInterface apiInterface;
+    private BaseSchedulerProvider baseSchedulerProvider;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,6 +38,7 @@ public class ExerciseActivity extends AppCompatActivity {
         internetUtil = new InternetUtil(this);
         exerciseDatabase = ExerciseDatabase.getInstance(this);
         apiInterface = ApiClient.getClient().create(ApiInterface.class);
+        baseSchedulerProvider = new SchedulerProvider();
 
         // setting toolbar
         toolbarSetup();
@@ -43,7 +47,7 @@ public class ExerciseActivity extends AppCompatActivity {
         recyclerViewSetup();
 
         // initialize view model using view model factory
-        exerciseViewModel = ViewModelProviders.of(this, new ViewModelFactory(new ExerciseRepository(getApplication(), internetUtil, exerciseDatabase, apiInterface))).get(ExerciseViewModel.class);
+        exerciseViewModel = ViewModelProviders.of(this, new ViewModelFactory(new ExerciseRepository(getApplication(), internetUtil, exerciseDatabase, apiInterface, baseSchedulerProvider))).get(ExerciseViewModel.class);
 
         // observe data and set it into recycler view
         observeViewModelData(false);

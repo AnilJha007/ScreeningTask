@@ -10,9 +10,11 @@ import com.wipro.screeningtask.database.entity.ExerciseEntity;
 import com.wipro.screeningtask.network.ApiInterface;
 import com.wipro.screeningtask.exercise.pojo.ExerciseList;
 import com.wipro.screeningtask.utils.InternetUtil;
+import com.wipro.screeningtask.utils.SchedulerProvider.BaseSchedulerProvider;
 
 import java.util.List;
 
+import io.reactivex.observers.DisposableObserver;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -27,12 +29,14 @@ public class ExerciseRepository {
 
     private ExerciseDatabase exerciseDatabase;
     private ApiInterface apiInterface;
+    private BaseSchedulerProvider schedulerProvider;
 
-    public ExerciseRepository(Application application, InternetUtil internetUtil, ExerciseDatabase exerciseDatabase, ApiInterface apiInterface) {
+    public ExerciseRepository(Application application, InternetUtil internetUtil, ExerciseDatabase exerciseDatabase, ApiInterface apiInterface, BaseSchedulerProvider baseSchedulerProvider) {
         this.internetUtil = internetUtil;
         this.application = application;
         this.exerciseDatabase = exerciseDatabase;
         this.apiInterface = apiInterface;
+        this.schedulerProvider = baseSchedulerProvider;
 
     }
 
@@ -87,39 +91,41 @@ public class ExerciseRepository {
             mutableErrorData.setValue(application.getResources().getString(R.string.internet_not_available));
         } else {
 
-            Call<ExerciseList> call = apiInterface.getExerciseList();
-            call.enqueue(new Callback<ExerciseList>() {
+            apiInterface.getExerciseList().subscribeOn(schedulerProvider.io()).observeOn(schedulerProvider.mainThread()).subscribeWith(new DisposableObserver<ExerciseList>() {
                 @Override
-                public void onResponse(Call<ExerciseList> call, Response<ExerciseList> response) {
+                public void onNext(ExerciseList exerciseList) {
 
                     mutableIsLoading.setValue(false);
 
-                    if (response.body() != null) {
-
-                        ExerciseList exerciseList = response.body();
+                    if (exerciseList != null) {
 
                         exerciseDatabase.exerciseDao().deleteExerciseData();
 
-                        mutableTitleData.setValue(response.body().getTitle());
+                        mutableTitleData.setValue(exerciseList.getTitle());
 
                         // insert exercise data into database
                         exerciseDatabase.exerciseDao().insertExerciseList(exerciseList.getRows());
 
                     } else {
 
-                        // set error here if response body is null
+                        // set error here if response is null
                         mutableErrorData.setValue(application.getResources().getString(R.string.error_try_later));
                     }
                 }
 
                 @Override
-                public void onFailure(Call<ExerciseList> call, Throwable t) {
-
+                public void onError(Throwable e) {
                     //  error here since request failed
                     mutableIsLoading.setValue(false);
-                    mutableErrorData.setValue(application.getResources().getString(R.string.error_try_later));
+                    mutableErrorData.setValue(e.getMessage());
+                }
+
+                @Override
+                public void onComplete() {
+
                 }
             });
+
         }
 
     }

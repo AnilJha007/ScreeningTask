@@ -11,6 +11,8 @@ import com.wipro.screeningtask.exercise.pojo.ExerciseList;
 import com.wipro.screeningtask.exercise.ui.ExerciseRepository;
 import com.wipro.screeningtask.network.ApiInterface;
 import com.wipro.screeningtask.utils.InternetUtil;
+import com.wipro.screeningtask.utils.SchedulerProvider.BaseSchedulerProvider;
+import com.wipro.screeningtask.utils.SchedulerProvider.SchedulerProviderTest;
 
 import org.junit.Before;
 import org.junit.Rule;
@@ -18,10 +20,12 @@ import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
+import org.mockito.internal.verification.Calls;
 
 import java.util.ArrayList;
 
-import okhttp3.Call;
+import io.reactivex.Observable;
+
 
 public class ExerciseRepositoryTest {
 
@@ -39,14 +43,12 @@ public class ExerciseRepositoryTest {
     @Mock
     private ApiInterface apiInterface;
 
-
     @Before
     public void setUp() {
 
         MockitoAnnotations.initMocks(this);
 
-        exerciseRepository = Mockito.spy(new ExerciseRepository(application, internetUtil, exerciseDatabase, apiInterface));
-
+        exerciseRepository = Mockito.spy(new ExerciseRepository(application, internetUtil, exerciseDatabase, apiInterface, new SchedulerProviderTest()));
     }
 
 
@@ -63,16 +65,44 @@ public class ExerciseRepositoryTest {
     }
 
     @Test
-    public void apiResponseError() {
+    public void getErrorDataForExerciseListApi() {
 
         Mockito.doReturn(true).when(internetUtil).isNetworkAvailable();
+
+        ExerciseDao exerciseDao = Mockito.mock(ExerciseDao.class);
+        Mockito.doReturn(exerciseDao).when(exerciseDatabase).exerciseDao();
+
+        Mockito.doReturn(0L).when(exerciseDao).getExerciseCount();
+
+        Mockito.doReturn(Observable.error(new Exception())).when(apiInterface).getExerciseList();
+
+        Resources resources = Mockito.mock(Resources.class);
+
+        Mockito.doReturn(resources).when(application).getResources();
+
+        Mockito.doReturn("error").when(resources).getString(R.string.error_try_later);
+
+        exerciseRepository.getExerciseList(true);
 
     }
 
     @Test
-    public void successfulData() {
+    public void getSuccessfulDataForExerciseListApi() {
 
         Mockito.doReturn(true).when(internetUtil).isNetworkAvailable();
+
+        ExerciseList exerciseList = Mockito.mock(ExerciseList.class);
+
+        ArrayList<ExerciseEntity> mockExerciseList = Mockito.mock(ArrayList.class);
+
+        ExerciseDao exerciseDao = Mockito.mock(ExerciseDao.class);
+
+        Mockito.doReturn("toolbar title").when(exerciseList).getTitle();
+        Mockito.doReturn(mockExerciseList).when(exerciseList).getRows();
+        Mockito.doReturn(exerciseDao).when(exerciseDatabase).exerciseDao();
+        Mockito.doReturn(Observable.just(exerciseList)).when(apiInterface).getExerciseList();
+
+        exerciseRepository.getExerciseList(true);
     }
 
 }
