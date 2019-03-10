@@ -6,20 +6,18 @@ import android.arch.persistence.room.Insert;
 import android.arch.persistence.room.Query;
 import android.arch.persistence.room.OnConflictStrategy;
 
-import com.wipro.screeningtask.database.entity.ExerciseEntity;
-
-import java.util.List;
+import com.wipro.screeningtask.database.entity.ExerciseDataEntity;
 
 @Dao
 public interface ExerciseDao {
 
     // insert data into database and handle conflict
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    void insertExerciseList(List<ExerciseEntity> exerciseList);
+    void insertExerciseList(ExerciseDataEntity exerciseList);
 
     // get all the data present in exercise table
     @Query("select * from exercise_table order by id asc")
-    LiveData<List<ExerciseEntity>> getExercise();
+    LiveData<ExerciseDataEntity> getExercise();
 
     // clear the table
     @Query("delete from exercise_table")

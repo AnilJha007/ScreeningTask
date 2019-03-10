@@ -1,6 +1,5 @@
 package com.wipro.screeningtask.utils;
 
-import android.app.Application;
 import android.arch.lifecycle.ViewModel;
 import android.arch.lifecycle.ViewModelProvider;
 import android.support.annotation.NonNull;

@@ -3,12 +3,15 @@ package com.wipro.screeningtask.database;
 import android.arch.persistence.room.Database;
 import android.arch.persistence.room.Room;
 import android.arch.persistence.room.RoomDatabase;
+import android.arch.persistence.room.TypeConverters;
 import android.content.Context;
 
 import com.wipro.screeningtask.database.dao.ExerciseDao;
-import com.wipro.screeningtask.database.entity.ExerciseEntity;
+import com.wipro.screeningtask.database.entity.ExerciseDataEntity;
+import com.wipro.screeningtask.utils.ExerciseConverter;
 
-@Database(entities = {ExerciseEntity.class}, version = 1, exportSchema = false)
+@Database(entities = { ExerciseDataEntity.class}, version = 2, exportSchema = false)
+@TypeConverters({ExerciseConverter.class})
 public abstract class ExerciseDatabase extends RoomDatabase {
 
     private static ExerciseDatabase instance;
@@ -20,6 +23,7 @@ public abstract class ExerciseDatabase extends RoomDatabase {
             instance = Room.databaseBuilder(context,
                     ExerciseDatabase.class, "exercise_database")
                     .allowMainThreadQueries()
+                    .fallbackToDestructiveMigration()
                     .build();
         }
 

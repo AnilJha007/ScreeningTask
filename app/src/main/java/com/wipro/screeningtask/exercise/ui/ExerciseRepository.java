@@ -6,18 +6,13 @@ import android.arch.lifecycle.MutableLiveData;
 
 import com.wipro.screeningtask.R;
 import com.wipro.screeningtask.database.ExerciseDatabase;
-import com.wipro.screeningtask.database.entity.ExerciseEntity;
+import com.wipro.screeningtask.database.entity.ExerciseDataEntity;
 import com.wipro.screeningtask.network.ApiInterface;
-import com.wipro.screeningtask.exercise.pojo.ExerciseList;
 import com.wipro.screeningtask.utils.InternetUtil;
 import com.wipro.screeningtask.utils.SchedulerProvider.BaseSchedulerProvider;
 
-import java.util.List;
 
 import io.reactivex.observers.DisposableObserver;
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
 
 public class ExerciseRepository {
 
@@ -25,7 +20,6 @@ public class ExerciseRepository {
     private InternetUtil internetUtil;
     private MutableLiveData<Boolean> mutableIsLoading;
     private MutableLiveData<String> mutableErrorData;
-    private MutableLiveData<String> mutableTitleData;
 
     private ExerciseDatabase exerciseDatabase;
     private ApiInterface apiInterface;
@@ -50,17 +44,11 @@ public class ExerciseRepository {
         return mutableErrorData;
     }
 
-    // get title data
-    public MutableLiveData<String> getTitle() {
-        return mutableTitleData;
-    }
-
     // get exercise list
-    public LiveData<List<ExerciseEntity>> getExerciseList(boolean isFromPullRefresh) {
+    public LiveData<ExerciseDataEntity> getExerciseList(boolean isFromPullRefresh) {
 
         mutableErrorData = new MutableLiveData<>();
         mutableIsLoading = new MutableLiveData<>();
-        mutableTitleData = new MutableLiveData<>();
 
         // here we need updated data from server
         if (isFromPullRefresh) {
@@ -91,9 +79,9 @@ public class ExerciseRepository {
             mutableErrorData.setValue(application.getResources().getString(R.string.internet_not_available));
         } else {
 
-            apiInterface.getExerciseList().subscribeOn(schedulerProvider.io()).observeOn(schedulerProvider.mainThread()).subscribeWith(new DisposableObserver<ExerciseList>() {
+            apiInterface.getExerciseList().subscribeOn(schedulerProvider.io()).observeOn(schedulerProvider.mainThread()).subscribeWith(new DisposableObserver<ExerciseDataEntity>() {
                 @Override
-                public void onNext(ExerciseList exerciseList) {
+                public void onNext(ExerciseDataEntity exerciseList) {
 
                     mutableIsLoading.setValue(false);
 
@@ -101,10 +89,8 @@ public class ExerciseRepository {
 
                         exerciseDatabase.exerciseDao().deleteExerciseData();
 
-                        mutableTitleData.setValue(exerciseList.getTitle());
-
                         // insert exercise data into database
-                        exerciseDatabase.exerciseDao().insertExerciseList(exerciseList.getRows());
+                        exerciseDatabase.exerciseDao().insertExerciseList(exerciseList);
 
                     } else {
 

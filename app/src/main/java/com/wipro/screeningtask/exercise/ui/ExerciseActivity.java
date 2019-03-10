@@ -65,9 +65,12 @@ public class ExerciseActivity extends AppCompatActivity {
     private void observeViewModelData(boolean isFromPullRefresh) {
 
         // observing data from api call or room database
-        exerciseViewModel.getExerciseList(isFromPullRefresh).observe(this, exercises -> {
+        exerciseViewModel.getExerciseList(isFromPullRefresh).observe(this, exerciseData -> {
 
-            exerciseAdapter.setData(exercises);
+            if (exerciseData != null) {
+                exerciseAdapter.setData(exerciseData.getRows());
+                getSupportActionBar().setTitle(exerciseData.getTitle());
+            }
 
             if (exerciseBinding.swipeRefreshLayout.isRefreshing())
                 exerciseBinding.swipeRefreshLayout.setRefreshing(false);
@@ -92,8 +95,6 @@ public class ExerciseActivity extends AppCompatActivity {
 
             Snackbar.make(exerciseBinding.rootLayout, s, 3000).show();
         });
-
-        exerciseViewModel.getTitle().observe(this, title -> getSupportActionBar().setTitle(title));
 
     }
 

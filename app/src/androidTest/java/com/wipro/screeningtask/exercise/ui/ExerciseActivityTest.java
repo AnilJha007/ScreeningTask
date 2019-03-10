@@ -14,12 +14,13 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
+import org.mockito.MockitoAnnotations;
 
 import static android.support.test.espresso.Espresso.onView;
 import static android.support.test.espresso.action.ViewActions.swipeDown;
 import static android.support.test.espresso.matcher.ViewMatchers.isDisplayingAtLeast;
 import static android.support.test.espresso.matcher.ViewMatchers.withId;
-import static org.junit.Assert.*;
+import static junit.framework.TestCase.assertNotNull;
 
 public class ExerciseActivityTest {
 
@@ -30,6 +31,8 @@ public class ExerciseActivityTest {
     @Before
     public void setUp() throws Exception {
         exerciseActivity = activityTestRule.getActivity();
+
+        MockitoAnnotations.initMocks(this);
     }
 
     @Test
@@ -71,10 +74,12 @@ public class ExerciseActivityTest {
             public Matcher<View> getConstraints() {
                 return constraints;
             }
+
             @Override
             public String getDescription() {
                 return action.getDescription();
             }
+
             @Override
             public void perform(UiController uiController, View view) {
                 action.perform(uiController, view);

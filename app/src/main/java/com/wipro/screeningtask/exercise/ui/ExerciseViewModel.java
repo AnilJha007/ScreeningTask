@@ -4,21 +4,20 @@ import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.MutableLiveData;
 import android.arch.lifecycle.ViewModel;
 
-import com.wipro.screeningtask.database.entity.ExerciseEntity;
+import com.wipro.screeningtask.database.entity.ExerciseDataEntity;
 
-import java.util.List;
 
 public class ExerciseViewModel extends ViewModel {
 
     private ExerciseRepository exerciseRepository;
-    private LiveData<List<ExerciseEntity>> exerciseLiveData;
+    private LiveData<ExerciseDataEntity> exerciseLiveData;
 
     public ExerciseViewModel(ExerciseRepository exerciseRepository) {
         this.exerciseRepository = exerciseRepository;
     }
 
     // get exercise list either from database or server
-    public LiveData<List<ExerciseEntity>> getExerciseList(boolean isFromPullRefresh) {
+    public LiveData<ExerciseDataEntity> getExerciseList(boolean isFromPullRefresh) {
 
         if (isFromPullRefresh) {
             return exerciseLiveData = exerciseRepository.getExerciseList(true);
@@ -38,10 +37,5 @@ public class ExerciseViewModel extends ViewModel {
     // get error message
     public MutableLiveData<String> getErrorMessage() {
         return exerciseRepository.getErrorMessage();
-    }
-
-    // get title message
-    public LiveData<String> getTitle() {
-        return exerciseRepository.getTitle();
     }
 }
