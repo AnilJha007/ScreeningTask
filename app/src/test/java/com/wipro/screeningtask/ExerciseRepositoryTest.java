@@ -90,7 +90,7 @@ public class ExerciseRepositoryTest {
         Observable<ExerciseDataEntity> actualResultsObservable = apiInterface.getExerciseList();
         TestObserver<ExerciseDataEntity> testObserver = actualResultsObservable.test();
         testObserver.assertSubscribed();
-        testObserver.assertFailure(Exception.class);
+        testObserver.assertError(Exception.class);
 
         Mockito.verify(exerciseDao, never()).insertExerciseList(exerciseData);
 

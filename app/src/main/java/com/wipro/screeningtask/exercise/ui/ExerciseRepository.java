@@ -11,7 +11,6 @@ import com.wipro.screeningtask.network.ApiInterface;
 import com.wipro.screeningtask.utils.InternetUtil;
 import com.wipro.screeningtask.utils.SchedulerProvider.BaseSchedulerProvider;
 
-
 import io.reactivex.observers.DisposableObserver;
 
 public class ExerciseRepository {

@@ -6,7 +6,6 @@ import android.arch.lifecycle.ViewModel;
 
 import com.wipro.screeningtask.database.entity.ExerciseDataEntity;
 
-
 public class ExerciseViewModel extends ViewModel {
 
     private ExerciseRepository exerciseRepository;

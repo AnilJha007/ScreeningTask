@@ -9,6 +9,7 @@ import android.view.View;
 
 import com.wipro.screeningtask.R;
 
+
 import org.hamcrest.Matcher;
 import org.junit.After;
 import org.junit.Before;
@@ -24,6 +25,7 @@ import static junit.framework.TestCase.assertNotNull;
 
 public class ExerciseActivityTest {
 
+
     @Rule
     public ActivityTestRule<ExerciseActivity> activityTestRule = new ActivityTestRule<ExerciseActivity>(ExerciseActivity.class);
     private ExerciseActivity exerciseActivity;
@@ -33,6 +35,7 @@ public class ExerciseActivityTest {
         exerciseActivity = activityTestRule.getActivity();
 
         MockitoAnnotations.initMocks(this);
+
     }
 
     @Test
