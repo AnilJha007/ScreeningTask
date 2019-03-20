@@ -8,7 +8,10 @@ android {
         targetSdkVersion 28
         versionCode 1
         versionName "1.0"
-        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+        //testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+
+        testInstrumentationRunner "com.wipro.screeningtask.exercise.ui.MockRunner"
+
     }
     buildTypes {
         release {
@@ -57,6 +60,9 @@ dependencies {
     // library for mock objects in testing
     testImplementation "org.mockito:mockito-core:$mockito_version"
     androidTestImplementation "org.mockito:mockito-android:$mockito_version"
+
+    // mock server api test
+    androidTestImplementation "com.squareup.okhttp3:mockwebserver:$mock_server_version"
 
     // library for test helpers
     testImplementation "android.arch.core:core-testing:$lifecycle_version"

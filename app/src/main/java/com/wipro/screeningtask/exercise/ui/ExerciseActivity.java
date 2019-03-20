@@ -9,6 +9,7 @@ import android.os.Bundle;
 import android.support.v7.widget.DividerItemDecoration;
 import android.view.View;
 
+import com.wipro.screeningtask.MyApplication;
 import com.wipro.screeningtask.R;
 import com.wipro.screeningtask.database.ExerciseDatabase;
 import com.wipro.screeningtask.databinding.ActivityExerciseBinding;
@@ -37,7 +38,7 @@ public class ExerciseActivity extends AppCompatActivity {
 
         internetUtil = new InternetUtil(this);
         exerciseDatabase = ExerciseDatabase.getInstance(this);
-        apiInterface = ApiClient.getClient().create(ApiInterface.class);
+        apiInterface = MyApplication.getMyApplication().getApiInterface();
         baseSchedulerProvider = new SchedulerProvider();
 
         // setting toolbar
